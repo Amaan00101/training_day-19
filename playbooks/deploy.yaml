@@ -1,0 +1,6 @@
+---
+- hosts: all
+  roles:
+    - ../roles/application
+    - ../roles/database
+    - ../roles/webserver

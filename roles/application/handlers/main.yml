@@ -1,2 +1,7 @@
 ---
 # handlers file for roles/application
+- name: Restart Nginx
+  service:
+    name: nginx
+    state: restarted
+  become: yes

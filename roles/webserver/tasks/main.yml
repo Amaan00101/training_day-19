@@ -1,2 +1,34 @@
 ---
 # tasks file for roles/webserver
+- name: Install Node.js
+  apt:
+    name: 
+      - nodejs
+      - npm
+    state: present
+  become: yes
+
+- name: Create application directory
+  file:
+    path: /var/www/app
+    state: directory
+  become: yes
+
+- name: Deploy Node.js application
+  copy:
+    src: files/
+    dest: /var/www/app/
+    mode: '0755'
+  become: yes
+
+- name: Install npm dependencies
+  npm:
+    path: /var/www/app
+    production: yes
+  become: yes
+
+- name: Start the Node.js application in the background
+  shell: nohup node /var/www/app/* > /var/www/app/nohup.out 2>&1 &
+  args:
+    chdir: /var/www/app
+  become: yes

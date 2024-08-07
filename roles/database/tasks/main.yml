@@ -1,2 +1,43 @@
 ---
 # tasks file for roles/database
+
+- name: Install MySQL server
+  ansible.builtin.apt:
+    update_cache: yes
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - mysql-server
+    - mysql-client 
+    - python3-mysqldb 
+    - libmysqlclient-dev
+  become: yes
+
+- name: Copy MySQL configuration file
+  template:
+    src: mysql.cnf.j2
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+  become: yes
+  notify: Restart MySQL
+
+- name: Ensure MySQL service is running and enabled
+  service:
+    name: mysql
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Creating MySQL user
+  mysql_user:
+    name: "{{ new_user }}"
+    password: "{{ new_pass }}"
+    priv: '*.*:ALL'
+    host: '%'
+    state: present
+  become: yes
+
+- name: Create MySQL database
+  mysql_db:
+    name: "{{ dbname }}"
+    state: present
+  become: yes

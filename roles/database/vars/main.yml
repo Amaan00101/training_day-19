@@ -1,2 +1,5 @@
 ---
 # vars file for roles/database
+new_user: "amaan2"
+new_pass: "passwordd"
+dbname: new_database
